@@ -1,0 +1,7 @@
+{
+  "name": "json-synthesizer",
+  "version": "0.0.0",
+  "main": "json-synthesizer.js",
+  "author": "Steven Yuansyall <s.yuan.all@gmail.com>",
+  "license": "MIT"
+}
