@@ -1,7 +1,9 @@
 {
   "name": "json-synthesizer",
   "version": "0.0.0",
-  "main": "json-synthesizer.js",
-  "author": "Steven Yuansyall <s.yuan.all@gmail.com>",
-  "license": "MIT"
+  "author": "Steven Yuan <s.yuan.all@gmail.com> (https://github.com/syall)",
+  "license": "MIT",
+  "scripts": {
+    "test": "node ./tst/test.js"
+  }
 }

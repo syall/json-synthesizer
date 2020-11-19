@@ -1,31 +1,31 @@
 # Design
 
-## Input
+## Problem
 
-`JSON.parse` input into Typed JSON
+## Solution
 
-Map Key Names with Path, turning into Imperative Function
+### Architecture
 
-Recursively call on Object and Array
+![Architecture of Synthesis](WORKFLOW.png "Architecture")
 
-- Array.isArray
-- _ typeof Object
+### Design Choices
 
-Mapping functions before Convert into Typed JSON
+### Limitations
 
-- Path and Structure Argument
-- Have Universal Path
-- Source Tag on Input
+## Implementation
 
-Validate Typed JSON by checking Structure
+### Input
 
-## Synthesis
+See more about the Specification in [SPECIFICATION.md](SPECIFICATION.md).
 
-Unification between Typed JSON
+### Synthesis
 
-- Types need to be in Array
-- Deduplication
+See more about the Synthesis in [SYNTHESIS.md](SYNTHESIS.md).
 
-## Output
+### Output
 
-Final Unified Typed JSON
+See more about Typed JSON in [TYPEDJSON.md](TYPEDJSON.md).
+
+## Additional Information
+
+See the initial proposal in [PROPOSAL.md](PROPOSAL.md).
