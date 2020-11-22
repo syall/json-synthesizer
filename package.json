@@ -1,9 +1,29 @@
 {
   "name": "json-synthesizer",
-  "version": "0.0.0",
-  "author": "Steven Yuan <s.yuan.all@gmail.com> (https://github.com/syall)",
-  "license": "MIT",
+  "version": "1.0.0",
+  "description": "Program Synthesizer from JSON data sources that produces Transpilable Typed JSON.",
+  "main": "./src/synthesize.js",
   "scripts": {
-    "test": "node ./tst/test.js"
+    "test": "node ./tst/test.js",
+    "docs": "rm -rf ./docs/docs/; jsdoc ./src/ ./tst/testFramework.js -c ./docs/config.json"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/syall/json-synthesizer.git"
+  },
+  "keywords": [
+    "JSON",
+    "Program Synthesis",
+    "Data Structure",
+    "Version Space Algebra"
+  ],
+  "author": "Steven Yuan <s.yuan.all@gmail.com> (https://portfolio.syall.work)",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/syall/json-synthesizer/issues"
+  },
+  "homepage": "https://json-synthesizer.syall.work",
+  "devDependencies": {
+    "jsdoc": "^3.6.6"
   }
 }

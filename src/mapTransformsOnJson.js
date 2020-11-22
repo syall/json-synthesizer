@@ -1,6 +1,16 @@
+/**
+ * @module {Function} mapTransformsOnJson
+ */
 const str = require('./util/str');
 
-// map JSON with mappingRules
+/**
+ * Map applicable Transforms on JSON based on source
+ *
+ * @param {Object} io - Input/Output Example with input to Transform
+ * @param {Object[]} transforms - Array of transforms
+ * @returns {Object} Transformed input JSON
+ * @fires process#exit
+ */
 function mapTransformsOnJson(io, transforms) {
     try {
         const filteredTransforms = transforms.filter(t => io.source.includes(t.source));
@@ -15,7 +25,6 @@ function mapTransformsOnJson(io, transforms) {
             `Source: ${io.source}\n` +
             `JSON: ${str(io.input)}`
         );
-        console.error(error);
         process.exit(1);
     }
 }

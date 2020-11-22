@@ -1,3 +1,0 @@
-# Typed JSON
-
-TBD

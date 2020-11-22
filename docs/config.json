@@ -1,0 +1,14 @@
+{
+    "source": {
+        "includePattern": ".+\\.js$"
+    },
+    "sourceType": "module",
+    "tags": {
+        "allowUnknownTags": false
+    },
+    "opts": {
+        "destination": "./docs/docs/",
+        "recurse": true,
+        "readme": "./README.md"
+    }
+}

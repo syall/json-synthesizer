@@ -1,7 +1,17 @@
+/**
+ * @module {Function} restructureTypedMaps
+ */
 const convertTypedMapToTypedJson = require('./convertTypedMapToTypedJson');
 const str = require('./util/str');
 
-// restructure Typed Maps
+/**
+ * Restructure a Typed Map 1's keys based on Typed Map 2's keys
+ *
+ * @param {Map} typedMap1 - Typed Map to Restructure
+ * @param {Map} typedMap2 - Typed Map Restructure Reference
+ * @returns {Map} Restructured Typed Map
+ * @fires process#exit
+ */
 function restructureTypedMaps(typedMap1, typedMap2) {
     try {
         const restructuredTypedMap = new Map();
