@@ -1,11 +1,12 @@
 {
   "name": "json-synthesizer",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Program Synthesizer from JSON data sources that produces Transpilable Typed JSON.",
-  "main": "./src/synthesize.js",
+  "main": "index.js",
   "scripts": {
-    "test": "node ./tst/test.js",
-    "docs": "rm -rf ./docs/docs/; jsdoc ./src/ ./tst/testFramework.js -c ./docs/config.json"
+    "test": "find tst -type f -name '*.test.js' -exec node {} \\;",
+    "docs": "rm -rf ./docs/docs/; jsdoc ./src/ -c ./docs/config.json",
+    "exports": "node -e \"console.log(require('./index'));\""
   },
   "repository": {
     "type": "git",

@@ -1,2 +1,8 @@
 # Node Modules
 node_modules/
+
+# Microsoft Office Temp Files
+docs/presentation/~$PRESENTATION.pptx
+
+# MacOS
+*.DS_Store

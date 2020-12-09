@@ -39,7 +39,7 @@ const specification = {
         // Transform JSON
         return transformedJson;
       }
-    }
+    },
     // ...
   ]
 };
@@ -48,7 +48,39 @@ const specification = {
 console.log(synthesize(specification));
 ```
 
-Specification requirements can be found in the [Documentation](#documentation).
+## Exports
+
+```javascript
+// Default Export
+module.exports = synthesize;
+
+// VSA Exports
+module.exports.vsa = {
+  convertJsonToTypedMap,
+  convertTypedMapToTypedJson,
+  intersects: {
+    intersectTypedMaps,
+    intersectTypes
+  },
+  mapTransformsOnJson,
+  restructureTypedMaps,
+  unions: {
+    unionTypedMaps,
+    unionTypes
+  }
+};
+
+// Util Exports
+module.exports.util = {
+  isType: {
+    isArray,
+    isNull,
+    isObject,
+    singleValue
+  },
+  str
+};
+```
 
 ## Documentation
 

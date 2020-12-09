@@ -3,8 +3,8 @@
  * @description Unions for Typed Maps and Types
  */
 const convertTypeToTypedJson = require('./convertTypedMapToTypedJson');
-const isType = require('./util/isType');
-const str = require('./util/str');
+const isType = require('../util/isType');
+const str = require('../util/str');
 
 /**
  * Union two Typed Maps based on Keys and Types
@@ -12,7 +12,7 @@ const str = require('./util/str');
  * @param {Map} typedMap1 - Map to Union
  * @param {Map} typedMap2 - Map to Union
  * @returns {Map} Unioned Map
- * @fires process#exit
+ * @throws Throws an error if an error occurred when unioning Typed Maps
  */
 function unionTypedMaps(typedMap1, typedMap2) {
     try {
@@ -27,10 +27,13 @@ function unionTypedMaps(typedMap1, typedMap2) {
                 if (t1Prefix !== t2Prefix) {
                     throw new Error(`Prefixes "${t1Prefix}" and "${t2Prefix}" for Key "${key}" do not match`);
                 }
-                unionedTypeMap.set(key, {
-                    prefix: inT1.prefix,
-                    type: unionTypes(inT1.type, inT2.type)
-                });
+                const type = unionTypes(inT1.type, inT2.type);
+                if (!isType.isNull(type)) {
+                    unionedTypeMap.set(key, {
+                        prefix: inT1.prefix,
+                        type
+                    });
+                }
             } else if (inT1 !== undefined) {
                 unionedTypeMap.set(key, inT1);
             } else if (inT2 !== undefined) {
@@ -41,14 +44,13 @@ function unionTypedMaps(typedMap1, typedMap2) {
         }
         return unionedTypeMap;
     } catch (error) {
-        console.error(
+        throw new Error(
             `${error} when unioning Typed Maps:\n` +
             `Typed Map 1:\n` +
             `${str(convertTypeToTypedJson(typedMap1))}\n` +
             `Typed Map 2:\n` +
             `${str(convertTypeToTypedJson(typedMap2))}`
         );
-        process.exit(1);
     }
 }
 
@@ -57,7 +59,7 @@ function unionTypedMaps(typedMap1, typedMap2) {
  *
  * @param {Object} type1 - Type to Union (array, object, types)
  * @param {Object} type2 - Type to Union (array, object, types)
- * @returns {Object} Unioned Type
+ * @returns {(Object|null)} Unioned Type if not null
  */
 function unionTypes(type1, type2) {
 
@@ -92,6 +94,13 @@ function unionTypes(type1, type2) {
         unionedType.types = type1.types;
     } else if (!isType.isNull(type2.types)) {
         unionedType.types = type2.types;
+    }
+
+    // null if input types are null
+    if (isType.isNull(unionedType.array) &&
+        isType.isNull(unionedType.object) &&
+        isType.isNull(unionedType.types)) {
+        return null
     }
 
     return unionedType;

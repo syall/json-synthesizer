@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>JSDoc: Source: src/intersects.js</title>
+    <title>JSDoc: Source: vsa/intersects.js</title>
 
     <script src="scripts/prettify/prettify.js"> </script>
     <script src="scripts/prettify/lang-css.js"> </script>
@@ -17,7 +17,7 @@
 
 <div id="main">
 
-    <h1 class="page-title">Source: src/intersects.js</h1>
+    <h1 class="page-title">Source: vsa/intersects.js</h1>
 
     
 
@@ -31,8 +31,8 @@
  * @description Intersects for Typed Maps and Types
  */
 const convertTypedMapToTypedJson = require('./convertTypedMapToTypedJson');
-const isType = require('./util/isType');
-const str = require('./util/str');
+const isType = require('../util/isType');
+const str = require('../util/str');
 
 /**
  * Intersect two Typed Maps based on Keys and Types
@@ -40,7 +40,7 @@ const str = require('./util/str');
  * @param {Map} typedMap1 - Map to Intersect
  * @param {Map} typedMap2 - Map to Intersect
  * @returns {Map} Intersected Map
- * @fires process#exit
+ * @throws Throws an error if error occurred when intersecting Typed Maps
  */
 function intersectTypedMaps(typedMap1, typedMap2) {
     try {
@@ -55,23 +55,24 @@ function intersectTypedMaps(typedMap1, typedMap2) {
                 if (t1Prefix !== t2Prefix) {
                     throw new Error(`Prefixes "${t1Prefix}" and "${t2Prefix}" for Key "${key}" do not match`);
                 }
-                intersectedTypeMap.set(key, {
-                    prefix: inT1.prefix,
-                    type: intersectTypes(inT1.type, inT2.type)
-                });
+                const type = intersectTypes(inT1.type, inT2.type);
+                if (!isType.isNull(type)) {
+                    intersectedTypeMap.set(key, {
+                        prefix: inT1.prefix,
+                        type
+                    });
+                }
             }
         }
         return intersectedTypeMap;
     } catch (error) {
-        console.error(error.stack.split('\n'));
-        console.error(
+        throw new Error(
             `${error} when intersecting Typed Maps:\n` +
             `Typed Map 1:\n` +
             `${str(convertTypedMapToTypedJson(typedMap1))}\n` +
             `Typed Map 2:\n` +
             `${str(convertTypedMapToTypedJson(typedMap2))}`
         );
-        process.exit(1);
     }
 }
 
@@ -80,7 +81,7 @@ function intersectTypedMaps(typedMap1, typedMap2) {
  *
  * @param {Object} type1 - Type to Intersect (array, object, types)
  * @param {Object} type2 - Type to Intersect (array, object, types)
- * @returns {Object} Intersected Type
+ * @returns {(Object|null)} Intersected Type if not null
  */
 function intersectTypes(type1, type2) {
 
@@ -98,6 +99,9 @@ function intersectTypes(type1, type2) {
     // object
     if (!isType.isNull(type1.object) &amp;&amp; !isType.isNull(type2.object)) {
         intersectedType.object = intersectTypedMaps(type1.object, type2.object);
+        if (intersectedType.object.size === 0) {
+            intersectedType.object = null;
+        }
     }
 
     // types
@@ -108,9 +112,16 @@ function intersectTypes(type1, type2) {
                 intersectedType.types.add(type);
             }
         }
-        if (intersectedType.size === 0) {
+        if (intersectedType.types.size === 0) {
             intersectedType.types = null;
         }
+    }
+
+    // mutually exclusive
+    if (isType.isNull(intersectedType.array) &amp;&amp;
+        isType.isNull(intersectedType.object) &amp;&amp;
+        isType.isNull(intersectedType.types)) {
+        return null;
     }
 
     return intersectedType;
@@ -130,13 +141,13 @@ module.exports = {
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-convertJsonToTypedMap.html">convertJsonToTypedMap</a></li><li><a href="module-convertTypedMapToTypedJson.html">convertTypedMapToTypedJson</a></li><li><a href="module-intersects.html">intersects</a></li><li><a href="module-isType.html">isType</a></li><li><a href="module-mapTransformsOnJson.html">mapTransformsOnJson</a></li><li><a href="module-restructureTypedMaps.html">restructureTypedMaps</a></li><li><a href="module-str.html">str</a></li><li><a href="module-synthesize.html">synthesize</a></li><li><a href="module-testFramework.html">testFramework</a></li><li><a href="module-unions.html">unions</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-convertJsonToTypedMap.html">convertJsonToTypedMap</a></li><li><a href="module-convertTypedMapToTypedJson.html">convertTypedMapToTypedJson</a></li><li><a href="module-intersects.html">intersects</a></li><li><a href="module-isType.html">isType</a></li><li><a href="module-mapTransformsOnJson.html">mapTransformsOnJson</a></li><li><a href="module-restructureTypedMaps.html">restructureTypedMaps</a></li><li><a href="module-str.html">str</a></li><li><a href="module-synthesize.html">synthesize</a></li><li><a href="module-unions.html">unions</a></li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.6</a> on Tue Nov 24 2020 09:26:41 GMT-0500 (Eastern Standard Time)
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.6</a> on Wed Dec 09 2020 23:00:07 GMT-0500 (Eastern Standard Time)
 </footer>
 
 <script> prettyPrint(); </script>

@@ -30,7 +30,11 @@ function isNull(input) {
  * @returns {boolean} Whether the input is an Object
  */
 function isObject(input) {
-    return input !== null && (typeof input) === 'object';
+    return (
+        input !== null &&
+        isArray(input) === false &&
+        (typeof input) === 'object'
+    );
 }
 
 /**

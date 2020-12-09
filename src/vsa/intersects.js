@@ -3,8 +3,8 @@
  * @description Intersects for Typed Maps and Types
  */
 const convertTypedMapToTypedJson = require('./convertTypedMapToTypedJson');
-const isType = require('./util/isType');
-const str = require('./util/str');
+const isType = require('../util/isType');
+const str = require('../util/str');
 
 /**
  * Intersect two Typed Maps based on Keys and Types
@@ -12,7 +12,7 @@ const str = require('./util/str');
  * @param {Map} typedMap1 - Map to Intersect
  * @param {Map} typedMap2 - Map to Intersect
  * @returns {Map} Intersected Map
- * @fires process#exit
+ * @throws Throws an error if error occurred when intersecting Typed Maps
  */
 function intersectTypedMaps(typedMap1, typedMap2) {
     try {
@@ -27,23 +27,24 @@ function intersectTypedMaps(typedMap1, typedMap2) {
                 if (t1Prefix !== t2Prefix) {
                     throw new Error(`Prefixes "${t1Prefix}" and "${t2Prefix}" for Key "${key}" do not match`);
                 }
-                intersectedTypeMap.set(key, {
-                    prefix: inT1.prefix,
-                    type: intersectTypes(inT1.type, inT2.type)
-                });
+                const type = intersectTypes(inT1.type, inT2.type);
+                if (!isType.isNull(type)) {
+                    intersectedTypeMap.set(key, {
+                        prefix: inT1.prefix,
+                        type
+                    });
+                }
             }
         }
         return intersectedTypeMap;
     } catch (error) {
-        console.error(error.stack.split('\n'));
-        console.error(
+        throw new Error(
             `${error} when intersecting Typed Maps:\n` +
             `Typed Map 1:\n` +
             `${str(convertTypedMapToTypedJson(typedMap1))}\n` +
             `Typed Map 2:\n` +
             `${str(convertTypedMapToTypedJson(typedMap2))}`
         );
-        process.exit(1);
     }
 }
 
@@ -52,7 +53,7 @@ function intersectTypedMaps(typedMap1, typedMap2) {
  *
  * @param {Object} type1 - Type to Intersect (array, object, types)
  * @param {Object} type2 - Type to Intersect (array, object, types)
- * @returns {Object} Intersected Type
+ * @returns {(Object|null)} Intersected Type if not null
  */
 function intersectTypes(type1, type2) {
 
@@ -70,6 +71,9 @@ function intersectTypes(type1, type2) {
     // object
     if (!isType.isNull(type1.object) && !isType.isNull(type2.object)) {
         intersectedType.object = intersectTypedMaps(type1.object, type2.object);
+        if (intersectedType.object.size === 0) {
+            intersectedType.object = null;
+        }
     }
 
     // types
@@ -80,9 +84,16 @@ function intersectTypes(type1, type2) {
                 intersectedType.types.add(type);
             }
         }
-        if (intersectedType.size === 0) {
+        if (intersectedType.types.size === 0) {
             intersectedType.types = null;
         }
+    }
+
+    // mutually exclusive
+    if (isType.isNull(intersectedType.array) &&
+        isType.isNull(intersectedType.object) &&
+        isType.isNull(intersectedType.types)) {
+        return null;
     }
 
     return intersectedType;

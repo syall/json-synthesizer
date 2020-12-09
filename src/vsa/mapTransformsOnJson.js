@@ -1,7 +1,7 @@
 /**
  * @module {Function} mapTransformsOnJson
  */
-const str = require('./util/str');
+const str = require('../util/str');
 
 /**
  * Map applicable Transforms on JSON based on source
@@ -9,7 +9,7 @@ const str = require('./util/str');
  * @param {Object} io - Input/Output Example with input to Transform
  * @param {Object[]} transforms - Array of transforms
  * @returns {Object} Transformed input JSON
- * @fires process#exit
+ * @throws Throws an error if error occurred when mapping Transforms on JSON
  */
 function mapTransformsOnJson(io, transforms) {
     try {
@@ -20,12 +20,11 @@ function mapTransformsOnJson(io, transforms) {
         }
         return mappedJson;
     } catch (error) {
-        console.error(
+        throw new Error(
             `${error} when mapping Transforms on JSON\n` +
             `Source: ${io.source}\n` +
             `JSON: ${str(io.input)}`
         );
-        process.exit(1);
     }
 }
 

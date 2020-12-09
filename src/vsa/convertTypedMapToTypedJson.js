@@ -1,7 +1,7 @@
 /**
  * @module {Function} convertTypedMapToTypedJson
  */
-const isType = require('./util/isType');
+const isType = require('../util/isType');
 
 /**
  * Convert Typed Map to Typed JSON
@@ -10,7 +10,7 @@ const isType = require('./util/isType');
  * for more details about Typed JSON.
  * @param {Map} typedMap - Typed Map to Convert
  * @returns {Object} Typed JSON object
- * @fires process#exit
+ * @throws Throws an error if error occurred when converting Typed Map to Typed JSON
  */
 function convertTypedMapToTypedJson(typedMap) {
     try {
@@ -31,8 +31,7 @@ function convertTypedMapToTypedJson(typedMap) {
         }
         return typedJson;
     } catch (error) {
-        console.error(`${error} when converting Typed Map to Typed JSON`);
-        process.exit(1);
+        throw new Error(`${error} when converting Typed Map to Typed JSON`);
     }
 }
 

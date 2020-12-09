@@ -14,6 +14,11 @@ const RED = '\x1b[0;31m';
 const GREEN = '\x1b[0;32m';
 
 /**
+ * ANSI Escape Color Code Yellow
+ */
+const YELLOW = '\x1b[0;33m';
+
+/**
  * ANSI Escape Color Code Cyan
  */
 const CYAN = '\x1b[0;36m';
@@ -32,10 +37,14 @@ const NC = '\x1b[0m';
  * @param {Function} scope - Scope of Test Suite
  */
 function describe(description, scope) {
-    console.log(`${CYAN}${description}${NC}`);
-    console.group();
-    scope();
-    console.groupEnd();
+    if (scope === undefined) {
+        console.log(`${YELLOW}${description}${NC}`);
+    } else {
+        console.log(`${CYAN}${description}${NC}`);
+        console.group();
+        scope();
+        console.groupEnd();
+    }
 }
 
 /**
@@ -47,12 +56,23 @@ function describe(description, scope) {
  * @param {Function} scope - Scope of Test
  */
 function test(description, scope) {
-    try {
-        scope();
-        console.log(`${GREEN}✓${NC} : ${description}`);
-    } catch (error) {
-        console.log(`${RED}✗${NC} : ${description}`);
-        console.error(`${error.message}`);
+    if (scope === undefined) {
+        console.log(`${YELLOW}?${NC} : ${description}`);
+    } else {
+        try {
+            scope();
+            console.log(`${GREEN}✓${NC} : ${description}`);
+        } catch (error) {
+            console.log(`${RED}✗${NC} : ${description}`);
+            const [_, file, row, col] = error.stack
+                .split('\n')
+                .filter(l => l.includes('test.js:'))[0]
+                .match(/(\/tst\/.+\.test\.js):(\d+):(\d+)$/);
+            console.error(`${RED}Error at${NC} ${file}:${row}:${col}`);
+            console.group();
+            console.error(`${error.message}`);
+            console.groupEnd();
+        }
     }
 }
 
